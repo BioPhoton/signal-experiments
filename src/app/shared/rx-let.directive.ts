@@ -34,11 +34,11 @@ export class RxLetDirective<T> implements OnDestroy {
     this.sub = effect(() => {
       // @NOTICE: this is needed to register the change
       const value = s();
-      this.strategyProvider.schedule(() => {
+      //this.strategyProvider.schedule(() => {
         this.updateView(value).detectChanges();
-      }, {
+      /*}, {
         scope: this
-      }).subscribe();
+      }).subscribe();*/
     });
   }
 

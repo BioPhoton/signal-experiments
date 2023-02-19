@@ -2,53 +2,144 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {computed, signal} from "../signals/index";
 import {UnpatchModule} from '@rx-angular/template/unpatch';
 import {work} from "../shared/work";
-import {renderEffect} from "../shared/render-effect";
 import {RxLetDirective} from "../shared/rx-let.directive";
+import {NgFor, NgIf} from "@angular/common";
+import {delay, Observable, of} from "rxjs";
+import {CounterService} from "../shared/counter.service";
 
 @Component({
   selector: 'binding-component',
   standalone: true,
-  imports: [UnpatchModule, RxLetDirective],
+  imports: [NgFor, NgIf, UnpatchModule, RxLetDirective],
   template: `
-    <span *rxLet="count; let c">cont:{{c}}</span><br>
-    <span *rxLet="double; let d">double:{{d}}</span><br>
-    <button (click)="inc()" [unpatch]>inc (zone-less)</button><br>
-    <button (click)="startTick()">start tick</button><br>
-    <button (click)="stopTick()">stop tick</button><br>
-    <br><br>
-    tmp is heavy: {{w()}}<br>
-    tmp is heavy: {{w()}}<br>
+    <h2>Counter Example</h2>
+    <div id="container" *rxLet="loaded; let showCounter">
+      <div *ngIf="showCounter; else:loading">
+        <div id="timer-display" class="countdownHolder" *rxLet="digits; let dis">
+      <span class="position" *ngFor="let digit of dis">
+            <span class="digit static">
+              {{digit}}
+            </span>
+          </span>
+        </div>
+
+        <fieldset id="counter-panel">
+          <button [unpatch] type="button" id="btn-reset" (click)="update()">
+            Update
+          </button>
+
+          <br/>
+
+          <button [unpatch] type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
+            Set To
+          </button>
+          <input id="set-to-input" style="width:100px" type="number" min=0 value="42" #setToInput/>
+
+          <button [unpatch] type="button" id="btn-reset" (click)="reset()">
+            Reset
+          </button>
+
+          <br/>
+
+          <button [unpatch] type="button" id="btn-up"
+                  (click)="countUp.set(true)">
+            Count Up
+          </button>
+
+          <button [unpatch] type="button" id="btn-down"
+                  (click)="countUp.set(false)">
+            Count Down
+          </button>
+
+          <br/>
+
+          <label style="width:100px">
+            Tick Speed
+
+            <input id="tick-speed-input" type="number" min=0 value="1000"
+                   #inputTickSpeed (input)="tickSpeed.set($any(inputTickSpeed).value)"/>
+          </label>
+          <label style="width:100px">
+            Count Diff
+
+            <input id="count-diff-input" type="number" min=0 value="1"
+                   #inputDiffCount (input)="countDiff.set($any(inputDiffCount).value)"/>
+          </label>
+        </fieldset>
+
+        <details>
+          <summary>
+            Features:
+          </summary>
+          <br/>
+          <p>
+            Initialy the diaply shows <b>count: 0, tickSpeed: 1000, countDiff: 1</b>,
+            a count update would increment, and the timer is not ticking.
+          </p>
+          <ul>
+            <li>- a click on [reset] sets the component into its initial state. Details see above</li>
+            <li>- a click on [setTo] sets the [count] to the value of the [set-to-input]</li>
+            <li>- a click on [update] updates the [count] with the new setting of the form</li>
+            <li>- a click on [count up] increments the [count] on the next tick</li>
+            <li>- a click on [count down] decrement the [count] on the next tick</li>
+            <li>- a change of [count-diff-input].value does not interfere with the running timer</li>
+          </ul>
+        </details>
+      </div>
+      <ng-template #loading>
+        <h1>Loading...</h1>
+      </ng-template>
+    </div>
+    tmp is heavy: {{w()}}<br/>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BindingComponent {
-  count = signal(0);
-  double = computed(() => this.count() * 2);
-  interval: (() => void) | undefined;
 
-  inc() {
-    this.count.set(this.count() + 1);
+  loaded = signal(false);
+  tickActive: false | number = false;
+  isTicking = signal(false);
+  count = signal(0);
+  countDiff = signal(0);
+  countUp = signal(false);
+  tickSpeed = signal(0);
+
+  calcCount(): number {
+    return this.count() + this.countDiff() * (this.countUp() ? 1 : -1);
   }
 
-  reset() {
+  digits = computed(() => {
+    console.log('digits of count: ', this.count())
+    return this.count().toString().split('');
+  })
+
+  constructor(private counterService: CounterService) {
+    this.counterService.getInitialCount$.subscribe(({tickSpeed, isTicking, count, countDiff, countUp}) => {
+      this.isTicking.set(isTicking);
+      this.count.set(count);
+      this.countDiff.set(countDiff);
+      this.countUp.set(countUp);
+      this.tickSpeed.set(tickSpeed);
+      this.loaded.set(true);
+    });
+  }
+
+  update(): void {
+    this.count.set(this.calcCount());
+  }
+
+  setTo(val: string): void {
+    this.count.set(parseInt(val));
+  }
+
+  reset(): void {
     this.count.set(0);
   }
 
-  startTick() {
-    const asyncId = setInterval(() => this.inc(), 1000);
-    this.interval = () => clearInterval(asyncId);
-  }
-
-  stopTick() {
-    if(this.interval) {
-      this.interval();
-      this.interval = undefined;
-    }
-  }
-
-  constructor() {
-    console.log('init count', this.count());
-    renderEffect(this.count);
+  getInitialCount(): Observable<{ count: number, isTicking: boolean, countUp: boolean, countDiff: number, tickSpeed: number }> {
+    return of({count: 0, countUp: true, isTicking: false, countDiff: 1, tickSpeed: 1000}).pipe(
+      delay(2000)
+    );
   }
 
   w = () => work(Math.random())
