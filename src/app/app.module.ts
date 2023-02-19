@@ -1,22 +1,23 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { UnpatchModule} from "@rx-angular/template/unpatch";
-import { RxLetDirective } from './rx-let.directive';
+import {ROUTES} from './routes';
+import {AppComponent} from './app.component';
+import {UnpatchModule} from "@rx-angular/template/unpatch";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
-    AppComponent,
-    RxLetDirective
+    AppComponent
   ],
   imports: [
     BrowserModule,
     UnpatchModule,
-    AppRoutingModule
+    RouterModule.forRoot(ROUTES)
   ],
   providers: [],
+  exports: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

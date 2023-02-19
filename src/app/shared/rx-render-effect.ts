@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, inject, ViewRef} from '@angular/core';
+import {ChangeDetectorRef, inject, TemplateRef, ViewContainerRef, ViewRef} from '@angular/core';
 import {RxStrategyNames, RxStrategyProvider} from '@rx-angular/cdk/render-strategies';
 import {effect, Signal} from '@preact/signals-core';
 

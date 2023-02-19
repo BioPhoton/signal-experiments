@@ -1,1 +1,117 @@
 /* You can add global styles to this file, and also import other style files */
+@import "node_modules/milligram";
+
+body {
+  font: 16px/1 'Roboto', sans-serif;
+}
+
+button,
+input {
+  color: #fff;
+}
+
+label {
+  color: rgb(0,0,0);
+}
+
+input[type="number"],
+input[type="text"] {
+  font-weight: bold;
+  margin: 0 0 20px;
+  padding: 8px 12px 10px 12px;
+  border: 0px solid rgb(0,0,0);
+  border-bottom-width: 2px;
+  background: none;
+  color: rgb(0,0,0);
+}
+
+button,
+input[type="submit"] {
+  width: 150px;
+  margin: 0 0 20px;
+  border: 1px solid rgba(0,0,0,0.9);
+  background: rgba(0,0,0,.75);
+}
+
+.countdownHolder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  width:100%;
+  margin:0 auto;
+  font: 120px/1.5 'Open Sans Condensed',sans-serif;
+  text-align:center;
+  letter-spacing:-3px;
+
+  .position{
+    display: inline-block;
+    height: 1.6em;
+    overflow: hidden;
+    position: relative;
+    width: 1.05em;
+
+    .digit{
+      position:absolute;
+      display:block;
+      width:1em;
+      background-color:#444;
+      border-radius:0.2em;
+      text-align:center;
+      color:#fff;
+      letter-spacing:-1px;
+
+      &.static{
+        box-shadow:1px 1px 1px rgba(4, 4, 4, 0.35);
+
+        background-image: linear-gradient(bottom, #3A3A3A 50%, #444444 50%);
+        background-image: -o-linear-gradient(bottom, #3A3A3A 50%, #444444 50%);
+        background-image: -moz-linear-gradient(bottom, #3A3A3A 50%, #444444 50%);
+        background-image: -webkit-linear-gradient(bottom, #3A3A3A 50%, #444444 50%);
+        background-image: -ms-linear-gradient(bottom, #3A3A3A 50%, #444444 50%);
+
+        background-image: -webkit-gradient(
+            linear,
+            left bottom,
+            left top,
+            color-stop(0.5, #3A3A3A),
+            color-stop(0.5, #444444)
+        );
+      }
+    }
+
+  }
+
+  .countDiv{
+    display:inline-block;
+    width:16px;
+    height:1.6em;
+    position:relative;
+
+    &:before,
+    &:after{
+      position:absolute;
+      width:5px;
+      height:5px;
+      background-color:#444;
+      border-radius:50%;
+      left:50%;
+      margin-left:-3px;
+      top:0.5em;
+      box-shadow:1px 1px 1px rgba(4, 4, 4, 0.5);
+      content:'';
+    }
+
+    &:after{
+      top:0.9em;
+    }
+  }
+
+}
+
+#counter-panel {
+ text-align: center;
+  label {
+    display:inline-block;
+  }
+}

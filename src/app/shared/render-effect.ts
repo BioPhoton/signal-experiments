@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, inject, ViewRef } from '@angular/core';
-import { effect, Signal } from '@preact/signals-core';
+import { effect, Signal } from '../signals/index';
 
 /**
  * @description
@@ -10,12 +10,13 @@ export function renderEffect<T>(renderSignal: Signal<T>) {
   // @TODO explain the problem this line solves
   Promise.resolve().then(() => {
     const renderEffect = effect(() => {
-      const v = renderSignal.value;
+      // @NOTICE: this is needed to register the change
+      const v = renderSignal();
       console.log('detectChanges for: ', v);
       cdRef.detectChanges();
     });
     (cdRef as ViewRef).onDestroy(() => {
-      renderEffect();
+      renderEffect.destroy();
     });
   });
 }
@@ -29,12 +30,13 @@ export function renderEffect2<T>() {
   // @TODO explain the problem this line solves
   return (renderSignal: Signal<T>) => Promise.resolve().then(() => {
     const renderEffect = effect(() => {
-      const v = renderSignal.value;
+      // @NOTICE: this is needed to register the change
+      const v = renderSignal();
       console.log('detectChanges for: ', v);
       cdRef.detectChanges();
     });
     (cdRef as ViewRef).onDestroy(() => {
-      renderEffect();
+      renderEffect.destroy();
     });
   });
 }

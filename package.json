@@ -20,7 +20,9 @@
     "@angular/router": "^15.1.0",
     "@preact/signals-core": "^1.2.3",
     "@rx-angular/cdk": "^1.0.0",
+    "@rx-angular/state": "^1.7.0",
     "@rx-angular/template": "^1.0.0",
+    "milligram": "^1.4.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
