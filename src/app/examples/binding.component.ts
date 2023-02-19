@@ -4,7 +4,6 @@ import {UnpatchModule} from '@rx-angular/template/unpatch';
 import {work} from "../shared/work";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {NgFor, NgIf} from "@angular/common";
-import {delay, Observable, of} from "rxjs";
 import {CounterService} from "../shared/counter.service";
 
 @Component({
@@ -50,15 +49,7 @@ import {CounterService} from "../shared/counter.service";
                   (click)="countUp.set(false)">
             Count Down
           </button>
-
           <br/>
-
-          <label style="width:100px">
-            Tick Speed
-
-            <input id="tick-speed-input" type="number" min=0 value="1000"
-                   #inputTickSpeed (input)="tickSpeed.set($any(inputTickSpeed).value)"/>
-          </label>
           <label style="width:100px">
             Count Diff
 
@@ -104,14 +95,13 @@ export class BindingComponent {
   countUp = signal(false);
   tickSpeed = signal(0);
 
-  calcCount(): number {
+  getNextCount(): number {
     return this.count() + this.countDiff() * (this.countUp() ? 1 : -1);
   }
 
   digits = computed(() => {
-    console.log('digits of count: ', this.count())
     return this.count().toString().split('');
-  })
+  });
 
   constructor(private counterService: CounterService) {
     this.counterService.getInitialCount$.subscribe(({tickSpeed, isTicking, count, countDiff, countUp}) => {
@@ -125,7 +115,7 @@ export class BindingComponent {
   }
 
   update(): void {
-    this.count.set(this.calcCount());
+    this.count.set(this.getNextCount());
   }
 
   setTo(val: string): void {
@@ -134,12 +124,6 @@ export class BindingComponent {
 
   reset(): void {
     this.count.set(0);
-  }
-
-  getInitialCount(): Observable<{ count: number, isTicking: boolean, countUp: boolean, countDiff: number, tickSpeed: number }> {
-    return of({count: 0, countUp: true, isTicking: false, countDiff: 1, tickSpeed: 1000}).pipe(
-      delay(2000)
-    );
   }
 
   w = () => work(Math.random())

@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {computed, effect, signal} from "../signals";
 import {NgFor, NgIf} from "@angular/common";
-import {delay, interval, Observable, of} from "rxjs";
-import {RxEffects} from "@rx-angular/state/effects";
+import {interval, Subscription} from "rxjs";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {CounterService} from "../shared/counter.service";
 
@@ -93,7 +92,8 @@ import {CounterService} from "../shared/counter.service";
             </li>
             <li>- a click on [pause timer] stops the updates immediately</li>
             <li>- a change of [count-diff-input].value does not interfere with the running timer</li>
-            <li>- a change of [tick-speed-input].value immediately starts a new timer with [tick-speed-input].value ms</li>
+            <li>- a change of [tick-speed-input].value immediately starts a new timer with [tick-speed-input].value ms
+            </li>
           </ul>
         </details>
       </div>
@@ -102,13 +102,12 @@ import {CounterService} from "../shared/counter.service";
       </ng-template>
 
     </div>
-  `,
-  providers: [RxEffects]
+  `
 })
 export class DynamicCounterComponent {
 
   loaded = signal(false);
-  tickActive: false | number = false;
+  tickActive: false | Subscription = false;
   isTicking = signal(false);
   count = signal(0);
   countDiff = signal(1);
@@ -120,13 +119,11 @@ export class DynamicCounterComponent {
   }
 
   digits = computed(() => {
-    console.log('digits of count: ', this.count())
     return this.count().toString().split('');
   })
 
   constructor(
-    private counterService: CounterService,
-    private rxEffect: RxEffects
+    private counterService: CounterService
   ) {
     this.counterService.getInitialCount$.subscribe(({tickSpeed, isTicking, count, countDiff, countUp}) => {
       this.isTicking.set(isTicking);
@@ -172,15 +169,13 @@ export class DynamicCounterComponent {
 
   startTick(): void {
     this.pauseTick();
-    this.tickActive = this.rxEffect.register(
-      interval(this.tickSpeed()),
-      () => this.count.set(this.calcCount())
-    );
+    this.tickActive = interval(this.tickSpeed())
+      .subscribe(() => this.count.set(this.calcCount()))
   }
 
   pauseTick(): void {
     if (this.tickActive !== false) {
-      this.rxEffect.unregister(this.tickActive as number);
+      this.tickActive.unsubscribe();
       this.tickActive = false;
     }
   }

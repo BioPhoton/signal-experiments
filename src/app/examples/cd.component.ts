@@ -12,6 +12,7 @@ import {CounterService} from "../shared/counter.service";
   imports: [NgFor, NgIf, UnpatchModule, PushPipe],
   template: `
     <h2>Counter Example</h2>
+    tmp is heavy: {{w()}}<br/>
     <div id="container">
       <div id="timer-display" class="countdownHolder">
       <span class="position" *ngFor="let digit of digits | push">
@@ -20,46 +21,30 @@ import {CounterService} from "../shared/counter.service";
             </span>
           </span>
       </div>
-
       <fieldset id="counter-panel">
         <button type="button" id="btn-reset" (click)="update()">
           Update
         </button>
-
         <br/>
-
         <button type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
           Set To
         </button>
         <input id="set-to-input" style="width:100px" type="number" min=0 value="42" #setToInput/>
-
         <button type="button" id="btn-reset" (click)="reset()">
           Reset
         </button>
-
         <br/>
-
         <button type="button" id="btn-up"
                 (click)="countUp.set(true)">
           Count Up
         </button>
-
         <button type="button" id="btn-down"
                 (click)="countUp.set(false)">
           Count Down
         </button>
-
         <br/>
-
-        <label style="width:100px">
-          Tick Speed
-
-          <input id="tick-speed-input" type="number" min=0 value="1000"
-                 #inputTickSpeed (input)="tickSpeed.set($any(inputTickSpeed).value)"/>
-        </label>
         <label style="width:100px">
           Count Diff
-
           <input id="count-diff-input" type="number" min=0 value="1"
                  #inputDiffCount (input)="countDiff.set($any(inputDiffCount).value)"/>
         </label>
@@ -84,7 +69,6 @@ import {CounterService} from "../shared/counter.service";
         </ul>
       </details>
     </div>
-    tmp is heavy: {{w()}}<br/>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
