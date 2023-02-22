@@ -5,6 +5,21 @@ body {
   font: 16px/1 'Roboto', sans-serif;
 }
 
+nav#main {
+  margin-bottom: 30px;
+}
+
+.renders {
+  min-height: 30px;
+  min-width: 30px;
+  padding: 5px 10px;
+  font-weight: bold;
+  border: 1px solid hotpink;
+  border-radius: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
 button,
 input {
   color: #fff;

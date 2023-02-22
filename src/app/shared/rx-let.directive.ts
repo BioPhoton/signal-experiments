@@ -3,6 +3,7 @@ import {effect, Signal, Effect, SettableSignal} from "../signals/index";
 import {RxStrategyProvider} from "@rx-angular/cdk/render-strategies";
 
 type EmbeddedViewContext<T> = { $implicit: T, rxLet: T };
+
 @Directive({
   selector: '[rxLet]',
   standalone: true
@@ -12,12 +13,12 @@ export class RxLetDirective<T> implements OnDestroy {
   static ngTemplateContextGuard<T>(
     dir: RxLetDirective<T>,
     ctx: unknown | null | undefined
-  ): ctx is EmbeddedViewContext<T>  {
+  ): ctx is EmbeddedViewContext<T> {
     return true;
   }
   static ngTemplateGuard_rxLet: 'binding';
 
-
+  private lastSignal!: Signal<T>;
   sub: Effect | undefined;
   embeddedView: EmbeddedViewRef<EmbeddedViewContext<T>> | undefined = undefined;
   private vCR: ViewContainerRef = inject(ViewContainerRef);
@@ -26,19 +27,18 @@ export class RxLetDirective<T> implements OnDestroy {
 
   @Input()
   set rxLet(s: SettableSignal<T> | Signal<T>) {
-    // console.log('GOT SIGNAL', s);
-    if(this.sub) {
+    if (this.lastSignal === s) {
+      return;
+    }
+    this.lastSignal = s;
+    if (this.sub) {
       this.sub.destroy();
       this.sub = undefined;
     }
     this.sub = effect(() => {
       // @NOTICE: this is needed to register the change
       const value = s();
-      //this.strategyProvider.schedule(() => {
-        this.updateView(value).detectChanges();
-      /*}, {
-        scope: this
-      }).subscribe();*/
+      this.updateView(value).detectChanges();
     });
   }
 
@@ -46,7 +46,7 @@ export class RxLetDirective<T> implements OnDestroy {
   }
 
   private updateView(value: T): EmbeddedViewRef<EmbeddedViewContext<T>> {
-    if(!this.embeddedView) {
+    if (!this.embeddedView) {
       this.embeddedView = this.vCR.createEmbeddedView(this.tR, {
         $implicit: value,
         rxLet: value
@@ -61,7 +61,7 @@ export class RxLetDirective<T> implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.sub) {
+    if (this.sub) {
       this.sub.destroy();
     }
   }

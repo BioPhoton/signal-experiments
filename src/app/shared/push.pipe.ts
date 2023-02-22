@@ -12,34 +12,31 @@ export class PushPipe<T> implements PipeTransform, OnDestroy {
   private lastSignal!: Signal<T>;
   private lastValue!: T;
   private cdRef = inject(ChangeDetectorRef);
-  private strategyProvider = inject(RxStrategyProvider);
 
   constructor() {
   }
 
   transform(s: Signal<T>, ...args: string[]): T {
-    if(this.lastSignal === s) {
+    if (this.lastSignal === s) {
       return this.lastValue;
     }
-    if(this.sub) {
+    this.lastSignal = s;
+
+    if (this.sub) {
       this.sub.destroy();
       this.sub = undefined;
     }
     this.sub = effect(() => {
       // @NOTICE: this is needed to register the change as effect
       const value = s();
-      this.strategyProvider.schedule(() => {
-        this.updateView(value)?.detectChanges();
-      }, {
-        scope: this
-      }).subscribe();
+      this.updateView(value)?.detectChanges();
     });
     return this.lastValue;
   }
 
   private updateView(value: T): ChangeDetectorRef | undefined {
     let r: ChangeDetectorRef | undefined = this.cdRef
-    if(this.lastValue === value) {
+    if (this.lastValue === value) {
       r = undefined;
     }
     this.lastValue = value;
@@ -47,9 +44,20 @@ export class PushPipe<T> implements PipeTransform, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.sub) {
+    if (this.sub) {
       this.sub.destroy();
     }
   }
 
 }
+
+/*
+this.sub = effect(() => {
+      const value = s();
+      this.strategyProvider.schedule(() => {
+        this.updateView(value)?.detectChanges();
+      }, {
+        scope: this
+      }).subscribe();
+});
+*/

@@ -1,12 +1,13 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   template: `
-    <header>
+    <h1>
       Angular Signals Demo
-    </header>
-    <nav>
+      <span class="renders">{{renders()}}</span>
+    </h1>
+    <nav id="main">
       <a [routerLink]="'intro'">Intro</a>
       <a [routerLink]="'cd-component'">CD on Component</a>
       <a [routerLink]="'cd-binding'">CD on Binding</a>
@@ -17,6 +18,14 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
+  _renders = 0;
 
+  constructor() {
+
+  }
+
+  renders() {
+    return this._renders++;
+  }
 }
 
