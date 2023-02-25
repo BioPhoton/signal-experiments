@@ -22,15 +22,15 @@ import {CounterService} from "../shared/counter.service";
         <button type="button" id="btn-reset" (click)="update()">
           Update
         </button>
-        <button type="button" id="btn-start" (click)="isTicking = true">
+        <button type="button" id="btn-start" (click)="isTicking.set(true)">
           Start
         </button>
 
-        <button type="button" id="$btn-pause" (click)="isTicking = false">
+        <button type="button" id="$btn-pause" (click)="isTicking.set(false)">
           Pause
         </button>
         <br/>
-        <button [unpatch] type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
+        <button type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
           Set To
         </button>
         <input id="set-to-input" style="width:100px" type="number" min=0 value="42" #setToInput/>
@@ -52,6 +52,7 @@ import {CounterService} from "../shared/counter.service";
         </label>
         <label style="width:100px">
           Tick Speed
+
           <input id="tick-speed-input" type="number" min=0 value="1000"
                  #inputTickSpeed (input)="$any(inputTickSpeed).value"/>
         </label>
@@ -79,7 +80,7 @@ import {CounterService} from "../shared/counter.service";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CdComponent {
+export class DynamicCounterComponent {
 
   tickActive: false | number = false;
   isTicking = false;

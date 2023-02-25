@@ -118,9 +118,7 @@ export class DynamicCounterComponent {
     return this.count() + this.countDiff() * (this.countUp() ? 1 : -1);
   }
 
-  digits = computed(() => {
-    return this.count().toString().split('');
-  })
+  digits = computed(() => this.count().toString().split(''))
 
   constructor(
     private counterService: CounterService
@@ -133,24 +131,14 @@ export class DynamicCounterComponent {
       this.tickSpeed.set(tickSpeed);
       this.loaded.set(true);
     });
-    let lastIsTicking!: boolean;
-    let lastTickSpeed!: number;
+
     effect(() => {
-      const tickSpeedChange = lastTickSpeed !== this.tickSpeed();
-      const isTickingChange = lastIsTicking !== this.isTicking();
-      lastIsTicking = this.isTicking();
-      lastTickSpeed = this.tickSpeed();
-      if (tickSpeedChange || isTickingChange) {
-        if (tickSpeedChange && lastIsTicking) {
-          this.startTick();
-        }
-        if (isTickingChange && lastIsTicking) {
-          this.startTick();
-        }
-        if (isTickingChange && !lastIsTicking) {
-          this.pauseTick();
-        }
-      }
+      if (this.isTicking()) this.startTick()
+      else this.pauseTick();
+    })
+
+    effect(() => {
+      if (this.tickSpeed() && this.isTicking()) this.startTick()
     })
   }
 

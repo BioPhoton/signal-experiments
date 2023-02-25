@@ -1,42 +1,42 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {NgFor} from '@angular/common';
 import {RendersComponent} from "../shared/renders.component";
 import {UnpatchModule} from "@rx-angular/template/unpatch";
 import {PushPipe} from "../shared/push.pipe";
 import {RxLetDirective} from "../shared/rx-let.directive";
+import {computed, effect, signal} from "../signals";
 
 @Component({
   selector: 'intro',
   standalone: true,
-  imports: [RendersComponent, UnpatchModule, PushPipe, RxLetDirective],
+  imports: [RendersComponent, NgFor, UnpatchModule, PushPipe, RxLetDirective],
   template: `
     <renders></renders>
-
     <div id="timer-display" class="countdownHolder">
       <span class="position">
             <span class="digit static">
-            {{count()}}
+            {{count}}
             </span>
           </span>
     </div>
-    <button [unpatch] (click)="update()">update</button><br>
-    <button [unpatch] (click)="reset()">reset</button><br>
+    <button (click)="update()">update</button><br>
+    <button (click)="reset()">reset</button><br>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IntroComponent {
-  count: any = 0;
-  // double = computed(() => this.count() * 2); // new signal with computation result
+
+  count = 0;
 
   constructor() {
-
   }
 
   update() {
-    this.count.set(this.count() + 1);
+    this.count =  this.count + 1;
   }
 
   reset() {
-    this.count.set(0);
+    this.count = 0;
   }
 
 }
