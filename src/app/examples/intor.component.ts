@@ -13,9 +13,9 @@ import {computed, effect, signal} from "../signals";
   template: `
     <renders></renders>
     <div id="timer-display" class="countdownHolder">
-      <span class="position">
+      <span class="position" *ngFor="let digit of digits()">
             <span class="digit static">
-            {{count}}
+            {{digit}}
             </span>
           </span>
     </div>
@@ -27,12 +27,13 @@ import {computed, effect, signal} from "../signals";
 export class IntroComponent {
 
   count = 0;
-
+  digits = () => this.count.toString().split('');
   constructor() {
+
   }
 
   update() {
-    this.count =  this.count + 1;
+    this.count = this.count +1;
   }
 
   reset() {

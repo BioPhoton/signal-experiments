@@ -10,11 +10,12 @@ nav#main {
 }
 
 .renders {
-  min-height: 30px;
-  min-width: 30px;
+  min-height: 50px;
+  min-width: 50px;
   padding: 5px 10px;
   font-weight: bold;
-  border: 1px solid hotpink;
+  font-size: 50px;
+  border: 2px dashed hotpink;
   border-radius: 50%;
   text-align: center;
   display: inline-block;
