@@ -1,7 +1,7 @@
+import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {RendersComponent} from "../shared/renders.component";
-import {UnpatchModule} from "@rx-angular/template/unpatch";
 import {PushPipe} from "../shared/push.pipe";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {computed, effect, signal} from "../signals";
@@ -9,7 +9,7 @@ import {computed, effect, signal} from "../signals";
 @Component({
   selector: 'intro',
   standalone: true,
-  imports: [RendersComponent, NgFor, UnpatchModule, PushPipe, RxLetDirective],
+  imports: [RendersComponent, NgFor, RxUnpatch, PushPipe, RxLetDirective],
   template: `
     <renders></renders>
     <div id="timer-display" class="countdownHolder">

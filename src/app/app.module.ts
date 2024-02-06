@@ -1,9 +1,9 @@
+import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {ROUTES} from './routes';
 import {AppComponent} from './app.component';
-import {UnpatchModule} from "@rx-angular/template/unpatch";
 import {RouterModule} from "@angular/router";
 
 @NgModule({
@@ -12,7 +12,7 @@ import {RouterModule} from "@angular/router";
   ],
   imports: [
     BrowserModule,
-    UnpatchModule,
+    RxUnpatch,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [],

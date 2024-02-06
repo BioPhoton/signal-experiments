@@ -1,6 +1,6 @@
+import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {computed, signal} from "../signals/index";
-import {UnpatchModule} from '@rx-angular/template/unpatch';
 import {work} from "../shared/work";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {NgFor, NgIf} from "@angular/common";
@@ -9,7 +9,7 @@ import {CounterService} from "../shared/counter.service";
 @Component({
   selector: 'binding-component',
   standalone: true,
-  imports: [NgFor, NgIf, UnpatchModule, RxLetDirective],
+  imports: [NgFor, NgIf, RxUnpatch, RxLetDirective],
   template: `
     <h2>Counter Example</h2>
     <div id="container" *rxLet="loaded; let showCounter">

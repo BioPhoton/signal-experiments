@@ -1,5 +1,5 @@
+import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {UnpatchModule} from '@rx-angular/template/unpatch';
 import {NgFor, NgIf} from "@angular/common";
 import {PushPipe} from "../shared/push.pipe";
 import {CounterService} from "../shared/counter.service";
@@ -7,7 +7,7 @@ import {CounterService} from "../shared/counter.service";
 @Component({
   selector: 'cd-component',
   standalone: true,
-  imports: [NgFor, NgIf, UnpatchModule, PushPipe],
+  imports: [NgFor, NgIf, RxUnpatch, PushPipe],
   template: `
     <h2>Counter Example</h2>
     <div id="container">
