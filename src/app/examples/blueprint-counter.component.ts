@@ -1,22 +1,24 @@
 import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {NgFor, NgIf} from "@angular/common";
+
 import {PushPipe} from "../shared/push.pipe";
 import {CounterService} from "../shared/counter.service";
 
 @Component({
   selector: 'cd-component',
   standalone: true,
-  imports: [NgFor, NgIf, RxUnpatch, PushPipe],
+  imports: [RxUnpatch, PushPipe],
   template: `
     <h2>Counter Example</h2>
     <div id="container">
       <div id="timer-display" class="countdownHolder">
-      <span class="position" *ngFor="let digit of digits()">
+        @for (digit of digits(); track digit) {
+          <span class="position">
             <span class="digit static">
               {{digit}}
             </span>
           </span>
+        }
       </div>
       <fieldset id="counter-panel">
         <button type="button" id="btn-reset" (click)="update()">
@@ -25,7 +27,7 @@ import {CounterService} from "../shared/counter.service";
         <button type="button" id="btn-start" (click)="isTicking.set(true)">
           Start
         </button>
-
+    
         <button type="button" id="$btn-pause" (click)="isTicking.set(false)">
           Pause
         </button>
@@ -48,16 +50,16 @@ import {CounterService} from "../shared/counter.service";
         <label style="width:100px">
           Count Diff
           <input id="count-diff-input" type="number" min=0 value="1"
-                 #inputDiffCount (input)="($any(inputDiffCount).value)"/>
+            #inputDiffCount (input)="($any(inputDiffCount).value)"/>
         </label>
         <label style="width:100px">
           Tick Speed
-
+    
           <input id="tick-speed-input" type="number" min=0 value="1000"
-                 #inputTickSpeed (input)="$any(inputTickSpeed).value"/>
+            #inputTickSpeed (input)="$any(inputTickSpeed).value"/>
         </label>
       </fieldset>
-
+    
       <details>
         <summary>
           Features:
@@ -77,7 +79,7 @@ import {CounterService} from "../shared/counter.service";
         </ul>
       </details>
     </div>
-  `,
+    `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicCounterComponent {

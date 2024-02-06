@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, ElementRef} from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  template: `
+    selector: 'app-root',
+    template: `
     <h1>
       Angular Signals Demo
       <span class="renders">{{renders()}}</span>
@@ -15,7 +16,9 @@ import {ChangeDetectionStrategy, Component, ElementRef} from '@angular/core';
     </nav>
     <router-outlet></router-outlet>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [RouterLink, RouterOutlet]
 })
 export class AppComponent {
   _renders = 0;

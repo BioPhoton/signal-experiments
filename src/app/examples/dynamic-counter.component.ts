@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {computed, effect, signal} from "../signals";
-import {NgFor, NgIf} from "@angular/common";
+
 import {interval, Subscription} from "rxjs";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {CounterService} from "../shared/counter.service";
@@ -8,101 +8,90 @@ import {CounterService} from "../shared/counter.service";
 @Component({
   selector: 'app-dynamic-counter',
   standalone: true,
-  imports: [NgFor, NgIf, RxLetDirective],
+  imports: [RxLetDirective],
   template: `
     <div id="container" *rxLet="loaded; let showCounter">
-      <div *ngIf="showCounter; else:loading">
-        <div id="timer-display" class="countdownHolder" *rxLet="digits; let dis">
-      <span class="position" *ngFor="let digit of dis">
-            <span class="digit static">
-              {{digit}}
-            </span>
-          </span>
+      @if (showCounter) {
+        <div>
+          <div id="timer-display" class="countdownHolder" *rxLet="digits; let dis">
+            @for (digit of dis; track digit) {
+              <span class="position">
+                <span class="digit static">
+                  {{digit}}
+                </span>
+              </span>
+            }
+          </div>
+          <fieldset id="counter-panel">
+            <button type="button" id="btn-reset" (click)="update()">
+              Update
+            </button>
+            <button type="button" id="btn-start" (click)="isTicking.set(true)">
+              Start
+            </button>
+            <button type="button" id="$btn-pause" (click)="isTicking.set(false)">
+              Pause
+            </button>
+            <br/>
+            <button type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
+              Set To
+            </button>
+            <input id="set-to-input" style="width:100px" type="number" min=0 value="42" #setToInput/>
+            <button type="button" id="btn-reset" (click)="reset()">
+              Reset
+            </button>
+            <br/>
+            <button type="button" id="btn-up"
+              (click)="countUp.set(true)">
+              Count Up
+            </button>
+            <button type="button" id="btn-down"
+              (click)="countUp.set(false)">
+              Count Down
+            </button>
+            <br/>
+            <label style="width:100px">
+              Tick Speed
+              <input id="tick-speed-input" type="number" min=0 value="1000"
+                #inputTickSpeed (input)="tickSpeed.set($any(inputTickSpeed).value)"/>
+            </label>
+            <label style="width:100px">
+              Count Diff
+              <input id="count-diff-input" type="number" min=0 value="1"
+                #inputDiffCount (input)="countDiff.set($any(inputDiffCount).value)"/>
+            </label>
+          </fieldset>
+          <details>
+            <summary>
+              Features:
+            </summary>
+            <br/>
+            <p>
+              Initialy the diaply shows <b>count: 0, tickSpeed: 1000, countDiff: 1</b>,
+              a count update would increment, and the timer is not ticking.
+            </p>
+            <ul>
+              <li>- a click on [reset] sets the component into its initial state. Details see above</li>
+              <li>- a click on [setTo] sets the [count] to the value of the [set-to-input]</li>
+              <li>- a click on [update] updates the [count] with the new setting of the form</li>
+              <li>- a click on [count up] increments the [count] on the next tick</li>
+              <li>- a click on [count down] decrement the [count] on the next tick</li>
+              <li>- a click on [start timer] updates the [count] with the new setting of the form every
+                [tick-speed-input].value ms
+              </li>
+              <li>- a click on [pause timer] stops the updates immediately</li>
+              <li>- a change of [count-diff-input].value does not interfere with the running timer</li>
+              <li>- a change of [tick-speed-input].value immediately starts a new timer with [tick-speed-input].value ms
+              </li>
+            </ul>
+          </details>
         </div>
-
-        <fieldset id="counter-panel">
-          <button type="button" id="btn-reset" (click)="update()">
-            Update
-          </button>
-
-          <button type="button" id="btn-start" (click)="isTicking.set(true)">
-            Start
-          </button>
-
-          <button type="button" id="$btn-pause" (click)="isTicking.set(false)">
-            Pause
-          </button>
-
-          <br/>
-
-          <button type="button" id="btn-set-to" (click)="setTo($any(setToInput).value)">
-            Set To
-          </button>
-          <input id="set-to-input" style="width:100px" type="number" min=0 value="42" #setToInput/>
-
-          <button type="button" id="btn-reset" (click)="reset()">
-            Reset
-          </button>
-
-          <br/>
-
-          <button type="button" id="btn-up"
-                  (click)="countUp.set(true)">
-            Count Up
-          </button>
-
-          <button type="button" id="btn-down"
-                  (click)="countUp.set(false)">
-            Count Down
-          </button>
-
-          <br/>
-
-          <label style="width:100px">
-            Tick Speed
-
-            <input id="tick-speed-input" type="number" min=0 value="1000"
-                   #inputTickSpeed (input)="tickSpeed.set($any(inputTickSpeed).value)"/>
-          </label>
-          <label style="width:100px">
-            Count Diff
-
-            <input id="count-diff-input" type="number" min=0 value="1"
-                   #inputDiffCount (input)="countDiff.set($any(inputDiffCount).value)"/>
-          </label>
-        </fieldset>
-
-        <details>
-          <summary>
-            Features:
-          </summary>
-          <br/>
-          <p>
-            Initialy the diaply shows <b>count: 0, tickSpeed: 1000, countDiff: 1</b>,
-            a count update would increment, and the timer is not ticking.
-          </p>
-          <ul>
-            <li>- a click on [reset] sets the component into its initial state. Details see above</li>
-            <li>- a click on [setTo] sets the [count] to the value of the [set-to-input]</li>
-            <li>- a click on [update] updates the [count] with the new setting of the form</li>
-            <li>- a click on [count up] increments the [count] on the next tick</li>
-            <li>- a click on [count down] decrement the [count] on the next tick</li>
-            <li>- a click on [start timer] updates the [count] with the new setting of the form every
-              [tick-speed-input].value ms
-            </li>
-            <li>- a click on [pause timer] stops the updates immediately</li>
-            <li>- a change of [count-diff-input].value does not interfere with the running timer</li>
-            <li>- a change of [tick-speed-input].value immediately starts a new timer with [tick-speed-input].value ms
-            </li>
-          </ul>
-        </details>
-      </div>
-      <ng-template #loading>
+      } @else {
         <h1>Loading...</h1>
-      </ng-template>
-
+      }
+    
     </div>
-  `
+    `
 })
 export class DynamicCounterComponent {
 
