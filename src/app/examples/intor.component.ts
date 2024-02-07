@@ -1,7 +1,7 @@
 import { RxUnpatch } from "@rx-angular/template/unpatch";
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 
-import {RendersComponent} from "../shared/renders.component";
+import {DirtyCheck} from "../shared/dirty-check.component";
 import {PushPipe} from "../shared/push.pipe";
 import {RxLetDirective} from "../shared/rx-let.directive";
 import {computed, effect, signal} from "../signals";
@@ -9,9 +9,9 @@ import {computed, effect, signal} from "../signals";
 @Component({
   selector: 'intro',
   standalone: true,
-  imports: [RendersComponent, RxUnpatch, PushPipe, RxLetDirective],
+  imports: [DirtyCheck, RxUnpatch, PushPipe, RxLetDirective],
   template: `
-    <renders></renders>
+    <dirty-check></dirty-check>
     <div id="timer-display" class="countdownHolder">
       @for (digit of digits(); track digit) {
         <span class="position">
