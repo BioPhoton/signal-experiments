@@ -14,6 +14,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <a [routerLink]="'cd-binding'">CD on Binding</a>
       <a [routerLink]="'counter'">Counter</a>
     </nav>
+    <nav id="secondary">
+      <a [routerLink]="'nesting-comparison-component'">Comparison</a>
+    </nav>
     <router-outlet></router-outlet>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush,

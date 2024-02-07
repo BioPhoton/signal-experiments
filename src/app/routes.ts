@@ -3,6 +3,7 @@ import {IntroComponent} from "./examples/intor.component";
 import {CdComponent} from "./examples/cd.component";
 import {DynamicCounterComponent} from "./examples/dynamic-counter.component";
 import {BindingComponent} from "./examples/binding.component";
+import {NestingComparisonComponent} from "./nesting-examples/comparison.component";
 
 export const ROUTES: Routes = [
   {
@@ -25,5 +26,9 @@ export const ROUTES: Routes = [
   {
     path: 'counter',
     component: DynamicCounterComponent
+  },
+  {
+    path: 'nesting-comparison-component',
+    component: NestingComparisonComponent
   }
 ];

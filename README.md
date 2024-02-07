@@ -1,4 +1,3 @@
-# Signals Experiments
+# Reactive Primitives
 
-This project maintains experiments with Angular's signals RFC.
 
